@@ -70,7 +70,7 @@ function goStructToTSInterface(input: string): string {
       }
 
       tsFields.push(
-        `  ${tsName}${hasOmitEmpty || hasPointer ? "?" : ""}: ${tsType};`
+        `  ${tsName}${hasOmitEmpty ? "?" : ""}: ${tsType};`
       );
       continue;
     }
@@ -159,6 +159,12 @@ function toSnakeCase(str: string): string {
     .replace(/^_/, "");
 }
 
+function toCamelCase(str: string): string {
+  return str
+    .replace(/_([a-z])/g, (_, char) => char.toUpperCase())
+    .replace(/^([a-z])/, (_, char) => char.toUpperCase());
+}
+
 function mapGoType(goType: string, isOptional: boolean = false): string {
   let cleanType = goType.replace(/\*/g, "");
 
@@ -217,7 +223,8 @@ function tsInterfaceToGoStruct(input: string): string {
       ? `json:"${tsName},omitempty"`
       : `json:"${tsName}"`;
 
-    const goFieldName = tsName.charAt(0).toUpperCase() + tsName.slice(1);
+    const goFieldName = toCamelCase(tsName);
+
     goFields.push(`\t${goFieldName} ${goType} \`${jsonTag}\``);
   }
 
