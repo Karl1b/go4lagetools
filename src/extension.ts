@@ -69,9 +69,7 @@ function goStructToTSInterface(input: string): string {
         tsType = `${tsType} | null`;
       }
 
-      tsFields.push(
-        `  ${tsName}${hasOmitEmpty ? "?" : ""}: ${tsType};`
-      );
+      tsFields.push(`  ${tsName}${hasOmitEmpty ? "?" : ""}: ${tsType};`);
       continue;
     }
 
@@ -274,7 +272,7 @@ function checkAllFieldsHaveJsonTags(input: string): boolean {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  const disposable = vscode.commands.registerCommand(
+  const convertSelection = vscode.commands.registerCommand(
     "go4lagetool.convert",
     () => {
       const editor = vscode.window.activeTextEditor;
@@ -304,7 +302,49 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(disposable);
+  const convertClipboard = vscode.commands.registerCommand(
+    "go4lagetool.convertClipboard",
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showWarningMessage("No active editor.");
+        return;
+      }
+
+      const enableJsonTagCheck = vscode.workspace
+        .getConfiguration("go4lagetool")
+        .get("enableJsonTagCheck", true);
+
+      // Read from clipboard
+      const clipboardText = await vscode.env.clipboard.readText();
+
+      if (!clipboardText.trim()) {
+        vscode.window.showWarningMessage("Clipboard is empty.");
+        return;
+      }
+
+      const { result, error } = convert(clipboardText, enableJsonTagCheck);
+
+      if (error) {
+        vscode.window.showErrorMessage(error);
+        return;
+      }
+
+      // Insert at cursor position (or replace selection if any)
+      await editor.edit((builder) => {
+        if (editor.selection.isEmpty) {
+          builder.insert(editor.selection.active, result);
+        } else {
+          builder.replace(editor.selection, result);
+        }
+      });
+
+      // Also update clipboard with converted result
+      await vscode.env.clipboard.writeText(result);
+    }
+  );
+
+  context.subscriptions.push(convertSelection, convertClipboard);
 }
 
 export function deactivate() {}

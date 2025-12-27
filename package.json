@@ -2,7 +2,7 @@
   "name": "go4lagetool",
   "displayName": "Go ↔ TypeScript type Converter",
   "description": "VSCode extension for converting Go structs to TypeScript interfaces and vice versa. Part of the go4lage.com toolset.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "KarlBreuer",
   "engines": {
     "vscode": "^1.85.0"
@@ -17,7 +17,8 @@
   },
   "pricing": "Free",
   "activationEvents": [
-    "onCommand:go4lagetool.convert"
+    "onCommand:go4lagetool.convert",
+    "onCommand:go4lagetool.convertClipboard"
   ],
   "main": "./dist/extension.js",
   "repository": {
@@ -40,6 +41,23 @@
       {
         "command": "go4lagetool.convert",
         "title": "Convert Struct ↔ Interface (Go ↔ TS)"
+      },
+      {
+        "command": "go4lagetool.convertClipboard",
+        "title": "Convert Clipboard Struct ↔ Interface (Go ↔ TS)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "go4lagetool.convert",
+        "key": "ctrl+shift+g",
+        "mac": "cmd+shift+g",
+        "when": "editorTextFocus && editorHasSelection"
+      },
+      {
+        "command": "go4lagetool.convertClipboard",
+        "key": "ctrl+alt+g",
+        "mac": "cmd+alt+g"
       }
     ],
     "menus": {
@@ -64,6 +82,11 @@
             "type": "boolean",
             "default": true,
             "description": "Enable checking for missing JSON tags in Go structs before converting to TypeScript. If enabled, missing JSON tags will be added instead of converting to TypeScript when tags are missing."
+          },
+          "go4lagetool.defaultKeybinding": {
+            "type": "string",
+            "default": "ctrl+alt+g",
+            "description": "Note: To change keybindings, use VS Code's Keyboard Shortcuts editor (Ctrl+K Ctrl+S) and search for 'go4lagetool'"
           }
         }
       }
