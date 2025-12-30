@@ -11,7 +11,7 @@ export function convert(
   }
 
   const isGo = /^\s*type\s+\w+\s+struct\b/i.test(trimmed);
-  const isTS = /^\s*interface\s+\w+\b/i.test(trimmed);
+  const isTS =/^\s*(export\s+)?interface\s+\w+\b/i.test(trimmed);
 
   if (isGo) {
     if (enableJsonTagCheck) {
@@ -101,7 +101,7 @@ function goStructToTSInterface(input: string): string {
     }
   }
 
-  return `interface ${interfaceName} {\n${tsFields.join("\n")}\n}`;
+  return `export interface ${interfaceName} {\n${tsFields.join("\n")}\n}`;
 }
 
 // --- Add missing JSON tags to Go struct ---
