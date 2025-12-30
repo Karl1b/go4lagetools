@@ -2,7 +2,7 @@
   "name": "go4lagetool",
   "displayName": "Go ↔ TypeScript type Converter",
   "description": "VSCode extension for converting Go structs to TypeScript interfaces and vice versa. Part of the go4lage.com toolset.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "KarlBreuer",
   "engines": {
     "vscode": "^1.85.0"
